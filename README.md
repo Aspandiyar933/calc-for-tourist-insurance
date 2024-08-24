@@ -2,4 +2,6 @@
 
 ## to-do 
 
-- [ ] example of todo 
+- [ ] create services 
+- [ ] create model 
+- [ ] create controller
