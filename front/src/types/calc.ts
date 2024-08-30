@@ -1,5 +1,5 @@
 
-export type InsuranceOption = {
+type InsuranceOption = {
   value: number;
   currency: string;
   premium: number;
@@ -33,5 +33,5 @@ export type APIResponse = {
       correction_factors_amount_sum: any[];
     };
   };
-  results: InsuranceOption[];
+  results: Array<InsuranceOption[]>;
 };

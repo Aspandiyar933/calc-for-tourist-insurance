@@ -15,7 +15,7 @@ export function Calc() {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [age, setAge] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState<APIResponse | null>(null);
+  const [results, setResults] = useState<APIResponse[]>([]);
   const [error, setError] = useState("");
 
   const countries = [
@@ -30,27 +30,50 @@ export function Calc() {
   ];
   
   const handleGetPrice = async() => {
-    if(!startDate || !endDate) {
+    if(!startDate || !endDate || !country || !age) {
       setError("Please select both start and end dates.");
       return;
     }
 
     setIsLoading(true);
     setError("");
-    setResults(null);
+    setResults([]);
+
+    const endpoints = [
+      "https://bestoffer.kz/api/mst/amanat",
+      "https://bestoffer.kz/api/mst/nomad",
+    ];
+
+    const requestData = {
+      age: parseInt(age),
+      country: country,
+      start_date: format(startDate, "yyyy-MM-dd"),
+      end_date: format(endDate, "yyyy-MM-dd")
+    };
 
     try{
-      const response = await axios.post<APIResponse>("https://bestoffer.kz/api/mst/amanat", {
-        age: parseInt(age),
-        country,
-        start_date: format(startDate, "yyyy-MM-dd"),
-        end_date: format(endDate, "yyyy-MM-dd"),
-      });
+      const requests = endpoints.map(endpoint => 
+        axios.post<APIResponse>(endpoint, requestData, {
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        })
+      );
 
-      setResults(response.data);
+      const responses = await Promise.all(requests);
+      const allResults = responses.map(response => response.data);
+      console.log('API Responses:', allResults);
+      setResults(allResults);
     } catch(err:any) {
-      setError("An error occurred while fetching the insurance prices. Please try again.");
-      console.error("API Error:", err.response ? err.response.data : err.message);
+      if (axios.isAxiosError(err)) {
+        console.error("API Error:", err.response?.data || err.message);
+        setError(`An error occurred: ${err.response?.data?.message || err.message}`);
+      } else {
+        console.error("An unexpected error occurred:", err);
+        setError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -121,21 +144,30 @@ export function Calc() {
       
       {error && <p className="text-red-500 mt-4">{error}</p>}
       
-      {results && (
+      {results.length > 0 && (
         <div className="mt-4">
           <h2 className="text-xl font-bold mb-2">Результаты:</h2>
-          <p>Страховая компания: {results.insurance_company.name}</p>
-          <p>Сайт страховой компании: <a href={results.insurance_company.main_page} target="_blank" rel="noopener noreferrer">{results.insurance_company.main_page}</a></p>
-          <h3 className="text-lg font-semibold mt-4 mb-2">Варианты страховки:</h3>
-          <ul>
-            {results.results.map((result, index) => (
-              <li key={index} className="mb-2">
-                <p>Сумма покрытия: {result.value} {result.currency}</p>
-                <p>Стоимость: {result.premium} тенге</p>
-                <p>Стоимость со скидкой: {result.discounted_premium} тенге</p>
-              </li>
-            ))}
-          </ul>
+          {results.map((result, index) => (
+            <div key={index} className="mb-6 p-4 border rounded">
+              <h3 className="text-lg font-semibold">{result.insurance_company.name}</h3>
+              <p>Сайт страховой компании: <a href={result.insurance_company.main_page} target="_blank" rel="noopener noreferrer">{result.insurance_company.main_page}</a></p>
+              <h4 className="text-md font-semibold mt-2">Варианты страховки:</h4>
+              {result.results.map((optionGroup, groupIndex) => (
+                <div key={groupIndex} className="mt-2">
+                  <h5 className="text-sm font-semibold">Группа опций {groupIndex + 1}</h5>
+                  <ul>
+                    {optionGroup.map((option, optionIndex) => (
+                      <li key={optionIndex} className="mb-2">
+                        <p>Сумма покрытия: {option.value} {option.currency}</p>
+                        <p>Стоимость: {option.premium} тенге</p>
+                        <p>Стоимость со скидкой: {option.discounted_premium} тенге</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </div>
