@@ -43,6 +43,9 @@ export function Calc() {
       "https://bestoffer.kz/api/mst/amanat",
       "https://bestoffer.kz/api/mst/interteach",
       "https://bestoffer.kz/api/mst/asko",
+      "https://bestoffer.kz/api/mst/freedom",
+      "https://bestoffer.kz/api/mst/nomad",
+      "https://bestoffer.kz/api/mst/jusan",
     ];
 
     const requestData = {
