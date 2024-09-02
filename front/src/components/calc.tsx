@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Info } from "lucide-react";
 import { APIResponse, InsuranceOption } from '@/types/calc';
+import { Card } from './ui/card';
 
 export function Calc() {
   const [country, setCountry] = useState<string>("");
@@ -118,9 +119,7 @@ export function Calc() {
     if (isSingleOption(options)) {
       return (
         <li className="mb-2">
-          <p>Сумма покрытия: {options.value} {options.currency}</p>
           <p>Стоимость: {options.premium} тенге</p>
-          <p>Стоимость со скидкой: {options.discounted_premium} тенге</p>
         </li>
       );
     }
@@ -130,9 +129,7 @@ export function Calc() {
         <ul>
           {options.map((option, index) => (
             <li key={index} className="mb-2">
-              <p>Сумма покрытия: {option.value} {option.currency}</p>
               <p>Стоимость: {option.premium} тенге</p>
-              <p>Стоимость со скидкой: {option.discounted_premium} тенге</p>
             </li>
           ))}
         </ul>
@@ -147,9 +144,7 @@ export function Calc() {
             <ul>
               {optionGroup.map((option, optionIndex) => (
                 <li key={optionIndex} className="mb-2">
-                  <p>Сумма покрытия: {option.value} {option.currency}</p>
                   <p>Стоимость: {option.premium} тенге</p>
-                  <p>Стоимость со скидкой: {option.discounted_premium} тенге</p>
                 </li>
               ))}
             </ul>
@@ -161,6 +156,22 @@ export function Calc() {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
+      <div className="bg-white p-8">
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="flex-1 pr-8">
+          <h1 className="text-5xl font-bold mb-4">
+            Туристическая<br />страховка
+          </h1>
+          <p className="text-gray-600 text-lg leading-relaxed">
+            Сравните цены страховок для путешествий за границу. Купите полис ВЗР
+            на выгодных условиях со страховой суммой от 30 000 до 100 000 $/€
+          </p>
+        </div>
+        <div className="flex-shrink-0">
+          <img src={"mst.webp"} alt="Travel Insurance Illustration" className="w-80 h-auto" />
+        </div>
+      </div>
+    </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Select value={country} onValueChange={setCountry}>
           <SelectTrigger id="country">
@@ -229,12 +240,32 @@ export function Calc() {
         <div className="mt-4">
           <h2 className="text-xl font-bold mb-2">Результаты:</h2>
           {results.map((result, index) => (
-            <div key={index} className="mb-6 p-4 border rounded">
-              <h3 className="text-lg font-semibold">{result.insurance_company.name}</h3>
-              <p>Сайт страховой компании: <a href={result.insurance_company.main_page} target="_blank" rel="noopener noreferrer">{result.insurance_company.main_page}</a></p>
-              <h4 className="text-md font-semibold mt-2">Варианты страховки:</h4>
-              {renderInsuranceOptions(result.results)}
-            </div>
+            <Card className='w-full max-w-4xl mx-auto p-4 bg-gray-50'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center space-x-3'>
+                  <div key={index}>
+                    <div className='font-semibold text-lg'>
+                      <h3 className="text-lg font-semibold">{result.insurance_company.name}</h3>
+                    </div>
+                    {/*}
+                    <div className='flex items-center space-x-8'>
+                      <h4 className="text-md font-semibold mt-2">Варианты страховки:</h4>
+                      {renderInsuranceOptions(result.results)}
+                    </div>
+                    */}
+                    <div className="flex items-center space-x-4">
+                      <span className="text-2xl font-bold">{renderInsuranceOptions(result.results[0])} tg</span>
+                      <a href={result.insurance_company.main_page} target="_blank" rel="noopener noreferrer">
+                        <Button className="bg-blue-900 hover:bg-blue-800 text-white">
+                          Купить онлайн
+                        </Button>
+                      </a>
+                      <Info className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
           ))}
         </div>
       )}
