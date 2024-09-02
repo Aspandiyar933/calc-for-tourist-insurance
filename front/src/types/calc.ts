@@ -1,5 +1,4 @@
-
-type InsuranceOption = {
+export interface InsuranceOption {
   value: number;
   currency: string;
   premium: number;
@@ -8,9 +7,9 @@ type InsuranceOption = {
     id: number;
     title: string;
   };
-};
+}
 
-export type APIResponse = {
+export interface APIResponse {
   insurance_company: {
     name: string;
     main_page: string;
@@ -33,5 +32,5 @@ export type APIResponse = {
       correction_factors_amount_sum: any[];
     };
   };
-  results: Array<InsuranceOption[]>;
-};
+  results: InsuranceOption[] | InsuranceOption[][];
+}
