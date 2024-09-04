@@ -260,9 +260,9 @@ export function Calc() {
           </div>
           <div className="flex-shrink-0">
             <img
-              src={"mst.webp"}
+              src={"image.png"}
               alt="Travel Insurance Illustration"
-              className="w-80 h-auto"
+              className="w-auto h-auto"
             />
           </div>
         </div>
