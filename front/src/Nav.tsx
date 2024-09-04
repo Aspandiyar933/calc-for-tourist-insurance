@@ -1,11 +1,11 @@
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md p-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-          <span className="text-2xl font-bold uppercase tracking-wider">Best Offer</span>
+          <img src={"logo.png"} alt="logo" className="h-auto w-auto"  />
         </div>
         <div className="flex">
           <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
