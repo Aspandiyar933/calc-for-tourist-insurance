@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Mail, Info } from "lucide-react";
+import { Calendar as CalendarIcon, Mail } from "lucide-react";
 import { APIResponse, InsuranceOption } from "@/types/calc";
 import { Card } from "./ui/card";
 
@@ -28,6 +28,7 @@ export function Calc() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<APIResponse[]>([]);
   const [error, setError] = useState<string>("");
+
 
   const countries = [
     "Австралия",
@@ -187,6 +188,7 @@ export function Calc() {
     }
   };
 
+
   const isSingleOption = (
     option: InsuranceOption | InsuranceOption[] | InsuranceOption[][]
   ): option is InsuranceOption => {
@@ -203,11 +205,7 @@ export function Calc() {
     options: InsuranceOption | InsuranceOption[] | InsuranceOption[][]
   ): JSX.Element => {
     if (isSingleOption(options)) {
-      return (
-        <li className="mb-2">
-          <p>Стоимость: {options.premium} тенге</p>
-        </li>
-      );
+      return <p>{options.premium} тенге</p>;
     }
 
     if (isOptionArray(options)) {
@@ -215,7 +213,7 @@ export function Calc() {
         <ul>
           {options.map((option, index) => (
             <li key={index} className="mb-2">
-              <p>Стоимость: {option.premium} тенге</p>
+              <p>{option.premium} тенге</p>
             </li>
           ))}
         </ul>
@@ -348,16 +346,31 @@ export function Calc() {
       {results.length > 0 && (
         <div className="max-w-6xl mx-auto p-8">
           <h2 className="text-xl font-bold mb-2">Результаты:</h2>
-          {results.map((result, index) => (
-            <Card className="w-full max-w-4xl mx-auto p-4 m-4 bg-gray-50">
-              <div key={index}>
-                <div className="font-semibold text-lg">
-                  <h3 className="text-sm font-semibold">
+          <div className="space-y-4">
+            {results.map((result) => (
+              <Card className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={`${result.insurance_company.name}.svg`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `${result.insurance_company.name}.png`;
+                    }}
+                    alt={result.insurance_company.name}
+                    className="w-16 h-16 object-contain"
+                  />
+                  <h3 className="text-lg font-semibold">
                     {result.insurance_company.name}
                   </h3>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className="text-1xl font-bold">
+                  <span className="font-bold">
+                    <p>Страховая сумма</p>
+                    {Array.isArray(result.results[0]) ? result.results[0][0].value : result.results[0].value} USD
+                  </span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <span className="text-xl font-bold">
                     {renderInsuranceOptions(result.results[0])}
                   </span>
                   <a
@@ -369,11 +382,10 @@ export function Calc() {
                       Купить онлайн
                     </Button>
                   </a>
-                  <Info className="w-5 h-5 text-gray-400" />
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
         </div>
       )}
 
