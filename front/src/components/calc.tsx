@@ -19,6 +19,10 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon, Mail } from "lucide-react";
 import { APIResponse, InsuranceOption } from "@/types/calc";
 import { Card } from "./ui/card";
+import React from "react";
+import { Dialog } from "@radix-ui/react-dialog";
+import TravelInsuranceDialog from "./TravelInsuranceDialog";
+
 
 export function Calc() {
   const [country, setCountry] = useState<string>("");
@@ -28,7 +32,7 @@ export function Calc() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<APIResponse[]>([]);
   const [error, setError] = useState<string>("");
-
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const countries = [
     "Австралия",
@@ -100,6 +104,22 @@ export function Calc() {
     "Южная Корея",
     "Япония",
   ];
+
+  const FloatingLabel = ({ id, label, children }: { id: string; label: string; children: React.ReactNode }) => (
+    <div className="relative pt-6">
+      <label
+        htmlFor={id}
+        className={`absolute text-sm transition-all duration-200 ${
+          React.isValidElement(children) && children.props.value
+            ? "-top-1 left-2 text-xs text-gray-500"
+            : "top-1/2 left-3 -translate-y-1/2 text-gray-400"
+        }`}
+      >
+        {label}
+      </label>
+      {children}
+    </div>
+  );
 
   const handleGetPrice = async (): Promise<void> => {
     if (!startDate || !endDate || !country || !age) {
@@ -188,7 +208,6 @@ export function Calc() {
     }
   };
 
-
   const isSingleOption = (
     option: InsuranceOption | InsuranceOption[] | InsuranceOption[][]
   ): option is InsuranceOption => {
@@ -243,94 +262,79 @@ export function Calc() {
   return (
     <div className="p-8 bg-white">
       <div className="max-w-6xl mx-auto p-8">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex-1 pr-8">
-            <h1 className="text-5xl font-bold mb-4">
-              Туристическая
-              <br />
-              страховка
-            </h1>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              Сравните цены страховок для путешествий за границу. Купите полис
-              ВЗР на выгодных условиях со страховой суммой от 30 000 до 100 000
-              $/€
-            </p>
-          </div>
-          <div className="flex-shrink-0">
-            <img
-              src={"image.png"}
-              alt="Travel Insurance Illustration"
-              className="w-auto h-auto"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto p-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Select value={country} onValueChange={setCountry}>
-            <SelectTrigger id="country">
-              <SelectValue placeholder="Куда поедете" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <FloatingLabel id="country" label="Куда поедете">
+            <Select value={country} onValueChange={setCountry}>
+              <SelectTrigger id="country">
+                <SelectValue placeholder="Куда поедете" />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FloatingLabel>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={`w-full justify-start text-left font-normal ${
-                  !startDate && "text-muted-foreground"
-                }`}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {startDate ? format(startDate, "PPP") : <span>Уезжаете</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={startDate}
-                onSelect={setStartDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <FloatingLabel id="startDate" label="Уезжаете">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={`w-full justify-start text-left font-normal ${
+                    !startDate && "text-muted-foreground"
+                  }`}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "PPP") : "Уезжаете"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </FloatingLabel>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={`w-full justify-start text-left font-normal ${
-                  !endDate && "text-muted-foreground"
-                }`}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate ? format(endDate, "PPP") : <span>Возвращаетесь</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={endDate}
-                onSelect={setEndDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <FloatingLabel id="endDate" label="Возвращаетесь">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={`w-full justify-start text-left font-normal ${
+                    !endDate && "text-muted-foreground"
+                  }`}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "PPP") : "Возвращаетесь"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </FloatingLabel>
 
-          <Input
-            type="number"
-            placeholder="Возраст туриста"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
+          <FloatingLabel id="age" label="Возраст туриста">
+            <Input
+              type="number"
+              placeholder="Возраст туриста"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+          </FloatingLabel>
+
           <Button
             className="bg-[#00303f] text-white mt-4"
             onClick={handleGetPrice}
@@ -366,22 +370,19 @@ export function Calc() {
                 <div className="flex items-center space-x-4">
                   <span className="font-bold">
                     <p>Страховая сумма</p>
-                    {Array.isArray(result.results[0]) ? result.results[0][0].value : result.results[0].value} USD
+                    {Array.isArray(result.results[0])
+                      ? result.results[0][0].value
+                      : result.results[0].value}{" "}
+                    USD
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <span className="text-xl font-bold">
                     {renderInsuranceOptions(result.results[0])}
                   </span>
-                  <a
-                    href={result.insurance_company.main_page}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button className="bg-blue-900 hover:bg-blue-800 text-white">
-                      Купить онлайн
-                    </Button>
-                  </a>
+                  <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <TravelInsuranceDialog />
+                  </Dialog>
                 </div>
               </Card>
             ))}

@@ -3,7 +3,7 @@ import { Calc } from './components/calc'
 function App() {
   
   return (
-    <Calc />
+    <><Calc /></>
   )
 }
 
