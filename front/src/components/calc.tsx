@@ -16,9 +16,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Mail } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { APIResponse, InsuranceOption } from "@/types/calc";
 import { Card } from "./ui/card";
+import { Badge } from '@/components/ui/badge';
 import React from "react";
 import { Dialog } from "@radix-ui/react-dialog";
 import TravelInsuranceDialog from "./TravelInsuranceDialog";
@@ -351,41 +352,51 @@ export function Calc() {
         <div className="max-w-6xl mx-auto p-8">
           <h2 className="text-xl font-bold mb-2">Результаты:</h2>
           <div className="space-y-4">
-            {results.map((result) => (
-              <Card className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={`${result.insurance_company.name}.svg`}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = `${result.insurance_company.name}.png`;
-                    }}
-                    alt={result.insurance_company.name}
-                    className="w-16 h-16 object-contain"
-                  />
-                  <h3 className="text-lg font-semibold">
-                    {result.insurance_company.name}
-                  </h3>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="font-bold">
-                    <p>Страховая сумма</p>
-                    {Array.isArray(result.results[0])
-                      ? result.results[0][0].value
-                      : result.results[0].value}{" "}
-                    USD
-                  </span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="text-xl font-bold">
-                    {renderInsuranceOptions(result.results[0])}
-                  </span>
-                  <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                    <TravelInsuranceDialog />
-                  </Dialog>
-                </div>
-              </Card>
-            ))}
+          {results
+              .sort((a, b) => 
+                a.insurance_company.name.toLowerCase() === "nomad" ? -1 : 
+                b.insurance_company.name.toLowerCase() === "nomad" ? 1 : 0
+              )
+              .map((result, index) => (
+                <Card key={result.insurance_company.name} className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={`${result.insurance_company.name}.svg`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `${result.insurance_company.name}.png`;
+                      }}
+                      alt={result.insurance_company.name}
+                      className="w-16 h-16 object-contain"
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        {result.insurance_company.name}
+                      </h3>
+                      {index === 0 && result.insurance_company.name.toLowerCase() === "nomad" && (
+                        <Badge className="bg-green-500 text-white">Лучший выбор</Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <span className="font-bold">
+                      <p>Страховая сумма</p>
+                      {Array.isArray(result.results[0])
+                        ? result.results[0][0].value
+                        : result.results[0].value}{" "}
+                      USD
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <span className="text-xl font-bold"> 
+                        {renderInsuranceOptions(result.results[0])}
+                    </span>
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                      <TravelInsuranceDialog />
+                    </Dialog>
+                  </div>
+                </Card>
+              ))}
           </div>
         </div>
       )}
@@ -501,46 +512,6 @@ export function Calc() {
           </div>
         </div>
       </div>
-
-      <footer className="bg-white mt-12 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-start">
-            <div className="mb-6 md:mb-0">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 flex items-center justify-center mr-3">
-                  <img src={"logo.png"} alt="logo" className="h-auto w-auto" />
-                </div>
-                <span className="text-xl font-bold">Best Offer</span>
-              </div>
-              <h3 className="font-semibold mb-2">О проекте:</h3>
-              <p className="text-sm text-gray-600 max-w-xl">
-                BestOffer.kz — это незаменимый финансовый помощник, который
-                помогает вам сделать лучший выбор среди финансовых и страховых
-                продуктов. Платформа предлагает широкий ассортимент предложений
-                от ведущих компаний, обеспечивая удобный поиск, сравнение и
-                оформление продуктов онлайн. С нами вы экономите время и деньги,
-                находя самые выгодные условия. Доверьтесь BestOffer.kz и делайте
-                осознанные финансовые решения с уверенностью.
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="mb-2">Ответим на все ваши вопросы</p>
-              <div className="flex items-center justify-end mb-4">
-                <Mail className="w-5 h-5 text-blue-500 mr-2" />
-                <a
-                  href="mailto:boffer.kz@gmail.com"
-                  className="text-blue-500 hover:underline"
-                >
-                  boffer.kz@gmail.com
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-200 text-sm text-gray-500 text-center">
-            © Финансовый маркетплейс BestOffer.kz
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
