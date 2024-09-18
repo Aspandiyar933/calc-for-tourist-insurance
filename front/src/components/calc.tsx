@@ -391,17 +391,24 @@ export function Calc() {
                     <span className="text-xl font-bold"> 
                         {renderInsuranceOptions(result.results[0])}
                     </span>
-                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                      <DialogTrigger asChild>
-                        <Button>Оформить страховку</Button>
-                      </DialogTrigger>
-                      <TravelInsuranceDialog
-                        countryId={result.country.external_info.id}
-                        insuranceSumId={result.results[0].external_info.id}
-                        startDate={startDate ?? new Date()}
-                        endDate={endDate ?? new Date()}
-                      />
-                    </Dialog>
+                    {result.insurance_company.name.toLowerCase() === "nomad" ? (                      
+                      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                        <DialogTrigger asChild>
+                          <Button>Оформить страховку</Button>
+                        </DialogTrigger>
+                        <TravelInsuranceDialog
+                          countryId={result.country.external_info.id}
+                          insuranceSumId={result.results[0].external_info.id}
+                          startDate={startDate ?? new Date()}
+                          endDate={endDate ?? new Date()}
+                        />
+                      </Dialog>) : (
+                          <Button asChild>
+                            <a href="https://google.com" target="_blank" rel="noopener noreferrer">
+                              Visit Our Site
+                            </a>
+                        </Button>
+                      )}
                   </div>
                 </Card>
               ))}

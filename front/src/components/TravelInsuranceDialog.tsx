@@ -89,6 +89,13 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
         <DialogTitle>Оформление страховки</DialogTitle>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-gray-100 p-4 rounded-md mb-4">
+          <h3 className="font-semibold mb-2">Информация о поездке:</h3>
+          <p><strong>Страна (ID):</strong> {countryId}</p>
+          <p><strong>Страховка (ID):</strong> {insuranceSumId}</p>
+          <p><strong>Дата начала:</strong> {format(startDate, "dd.MM.yyyy")}</p>
+          <p><strong>Дата окончания:</strong> {format(endDate, "dd.MM.yyyy")}</p>
+        </div>
         <div>
           <Label htmlFor="iin">ИИН</Label>
           <Input 
