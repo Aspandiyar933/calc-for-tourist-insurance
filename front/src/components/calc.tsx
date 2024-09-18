@@ -163,6 +163,7 @@ export function Calc() {
         requests.map((p) => p.catch((e) => e))
       );
 
+
       const successfulResponses = responses.filter(
         (response): response is AxiosResponse<APIResponse> =>
           !(response instanceof Error)
@@ -395,7 +396,7 @@ export function Calc() {
                         <Button>Оформить страховку</Button>
                       </DialogTrigger>
                       <TravelInsuranceDialog
-                        countryId={result.country.external_info.country_id}
+                        countryId={result.country.external_info.id}
                         insuranceSumId={result.results[0].external_info.id}
                         startDate={startDate ?? new Date()}
                         endDate={endDate ?? new Date()}
