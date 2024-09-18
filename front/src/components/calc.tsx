@@ -21,9 +21,8 @@ import { APIResponse, InsuranceOption } from "@/types/calc";
 import { Card } from "./ui/card";
 import { Badge } from '@/components/ui/badge';
 import React from "react";
-import { Dialog } from "@radix-ui/react-dialog";
-import TravelInsuranceDialog from "./TravelInsuranceDialog";
-
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import TravelInsuranceDialog from './TravelInsuranceDialog';
 
 export function Calc() {
   const [country, setCountry] = useState<string>("");
@@ -392,7 +391,15 @@ export function Calc() {
                         {renderInsuranceOptions(result.results[0])}
                     </span>
                     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                      <TravelInsuranceDialog />
+                      <DialogTrigger asChild>
+                        <Button>Оформить страховку</Button>
+                      </DialogTrigger>
+                      <TravelInsuranceDialog
+                        countryId={result.country.external_info.country_id}
+                        insuranceSumId={result.results[0].external_info.id}
+                        startDate={startDate ?? new Date()}
+                        endDate={endDate ?? new Date()}
+                      />
                     </Dialog>
                   </div>
                 </Card>

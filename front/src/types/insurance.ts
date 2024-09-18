@@ -1,3 +1,8 @@
+export interface InsuranceCompany {
+  name: string;
+  main_page: string;
+}
+
 export interface InsuranceOption {
   value: number;
   currency: string;
@@ -9,11 +14,9 @@ export interface InsuranceOption {
   };
 }
 
+
 export interface APIResponse {
-  insurance_company: {
-    name: string;
-    main_page: string;
-  };
+  insurance_company: InsuranceCompany;
   country: {
     name: string;
     external_info: {
@@ -32,7 +35,7 @@ export interface APIResponse {
       correction_factors_amount_sum: any[];
     };
   };
-  results: InsuranceOption[];
+  results: InsuranceOption | InsuranceOption[];
 }
 
 export interface NomadCustomer {
