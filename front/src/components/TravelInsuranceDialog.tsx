@@ -115,6 +115,7 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
         onSubmit={handleSubmit}
         className="space-y-4 p-6 pt-0 flex-1 overflow-y-auto"
       >
+        {/*
         <div className="bg-gray-100 p-4 rounded-md mb-4 space-y-1">
           <h3 className="font-semibold mb-2">Информация о поездке:</h3>
           <p>
@@ -130,7 +131,7 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
             <strong>Дата окончания:</strong> {format(endDate, "dd.MM.yyyy")}
           </p>
         </div>
-
+        */}
         <div className="space-y-4">
           <div>
             <Label htmlFor="iin" className="text-sm font-medium">
