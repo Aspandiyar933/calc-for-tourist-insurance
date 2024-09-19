@@ -404,7 +404,7 @@ export function Calc() {
                         />
                       </Dialog>) : (
                           <Button asChild>
-                            <a href="https://google.com" target="_blank" rel="noopener noreferrer">
+                            <a href={result.insurance_company.main_page} target="_blank" rel="noopener noreferrer">
                               Visit Our Site
                             </a>
                         </Button>
@@ -426,9 +426,9 @@ export function Calc() {
           </div>
           <div className="absolute bottom-0 right-0 w-auto h-auto flex items-end justify-end">
             <img
-              src={"cardmst.png"}
+              src={"btr.jpg"}
               alt="Travel illustration"
-              className="max-w-full max-h-full object-contain"
+              className="w-96 h-50 object-contain"
             />
           </div>
         </Card>

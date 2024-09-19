@@ -38,9 +38,9 @@ const Navbar: React.FC = () => {
             </div>
             <div className="flex-shrink-0">
               <img
-                src={"image.png"}
+                src={"tyr.png"}
                 alt="Travel Insurance Illustration"
-                className="w-auto h-auto"
+                className="w-96 h-auto object-cover"
               />
             </div>
           </div>
