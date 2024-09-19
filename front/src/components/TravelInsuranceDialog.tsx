@@ -19,6 +19,13 @@ interface TravelInsuranceDialogProps {
   endDate: Date;
 }
 
+interface OrderResponse {
+  order_id: number;
+  total_cost: number;
+  pay_link: string;
+}
+
+
 const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
   countryId,
   insuranceSumId,
@@ -38,6 +45,7 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
   const [issuedBy, setIssuedBy] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderResponse, setOrderResponse] = useState<OrderResponse | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,6 +76,7 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
         formData
       );
       console.log("Order submitted successfully:", response.data);
+      setOrderResponse(response.data);
       toast.success("Страховка успешно оформлена!");
       // Handle successful submission (e.g., close dialog)
     } catch (error) {
@@ -221,9 +230,23 @@ const TravelInsuranceDialog: React.FC<TravelInsuranceDialogProps> = ({
           </div>
         </div>
 
-        <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
-          {isSubmitting ? "Оформление..." : "Оформить страховку"}
-        </Button>
+        {orderResponse ? (
+            <div className="space-y-4">
+              <p>Номер заказа: {orderResponse.order_id}</p>
+              <p>Общая стоимость: {orderResponse.total_cost} тенге</p>
+              <Button 
+                type="button" 
+                className="w-full"
+                onClick={() => window.open(orderResponse.pay_link, '_blank')}
+              >
+                Оплатить
+              </Button>
+            </div>
+          ) : (
+            <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
+              {isSubmitting ? 'Оформление...' : 'Оформить страховку'}
+            </Button>
+          )}
       </form>
     </DialogContent>
   );
